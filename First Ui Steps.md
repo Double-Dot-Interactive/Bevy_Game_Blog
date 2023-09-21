@@ -1,4 +1,4 @@
-# How one line of code can wreck you program
+
 
 ## Context
 In our game I was developing a main menu ui with the `kayak_ui` framework for the `Bevy Game Engine`  when I ran into this issue `QueryDoesNotMatch(3v0)`. 
@@ -20,7 +20,7 @@ I was frantically sifting through documentation I had already read for hours. Th
 After putting my code into an isolated environment I began to truly debug it. This is were we should talk about how to debug code
 
 #### Go to Dev Debugging 
-1. Always first step is to look for typos or anything thats missing like for example, a struct with a similar name or similarites in general is used instead of the correct one, or importing a players health info in a `display_player_health` system where it is not. This was my first step in debugging, and spoiler it was the step I overlooked and would have led to the true problem.
+1. Always first step is to look for typos or anything that's missing like for example, a struct with a similar name or similarities in general is used instead of the correct one, or importing a players health info in a `display_player_health` system where it is not. This was my first step in debugging, and spoiler it was the step I overlooked and would have led to the true problem.
 
 2. If all your required data is being imported and there aren't any visible typos try adding `println!()`  statements. This will help analyze the data being imported. This was my second step, it didn't yield any valuable info to my problem. 
 
@@ -28,9 +28,11 @@ After putting my code into an isolated environment I began to truly debug it. Th
 
 4. Modify your code to something else that could work. Think of how a scientific experiment has independent variables that can change one at a time. For me this involved moving the button out of the main menu and instead just display the button itself. This yielded a ui that worked but still didn't accomplish my overall goal of displaying the buttons within a confined menu space. Then I tried not rendering a button at all but rather just rendering the main menu. This led me to my real problem that I will talk about later.
 
-5. Ask for help. We are only human and we can easily overlook things. For me this involved going to the `kaya_ui` GitHub and sumitting an issue. I also made the mistake of using this method before the previous one. 
+5. Move the code that is broken into an isolated environment. This is an important step because especially with a complex program like a game, it's important to rule out any possible cause from external code. For me this involved just making a basic Bevy app that would open a window and display the ui, so there was no state management or asset loading or literally anything else in the games code to cause a problem.
 
-6. Rewrite the whole thing. When I say the whole thing I don't mean the entire program, I mean rewrite the part thats broken. This should always be a final straw fix and should require a great amount of brainstorming on how to restructure, otherwise you’d just be doing the same thing over again. Luckily I didn't have to use this method here, but I have used it for previous projects and it has yielded great results.
+7. Ask for help. We are only human and we can easily overlook things. For me this involved going to the `kaya_ui` GitHub and submitting an issue. I also made the mistake of using this method before the previous one. 
+
+8. Rewrite the whole thing. When I say the whole thing I don't mean the entire program, I mean rewrite the part thats broken. This should always be a final straw fix and should require a great amount of brainstorming on how to restructure, otherwise you’d just be doing the same thing over again. Luckily I didn't have to use this method here, but I have used it for previous projects and it has yielded great results.
 
 ### I found the bug
 After changing my code in isolated ways, I narrowed down my issue to the `MainMenuBundle` which was how I was displaying the main menu. I examined it for a few minutes and couldn't find any obvious fallacies. I knew the issue made the game panic was in the `button_render` function. So I thought about using a default `kayak_ui` button instead to see if that would work. This led me to another clue, I got this error `Wasn't able to find render/update systems for widget: ButtonProps!`. This `ButtonProps` that it failed to find, was my own custom code, but I thought I removed all signs of it, and I did until I found the most elusive piece of code I didn't know about.
@@ -53,4 +55,4 @@ Can you spot it? The `widget_name` parameter thats required for `kayak_ui` to id
 ### What I learned
 1. No matter what trust the process of debugging. Obviously every instance of debugging is unique and may require modifications to the original process. However in most cases it branches off from the start. In addition, even though I did a poor job of step one I still found the underline issue in step four.
 
-2. Always check the code you copied to make sure any fallacies are corrected as this can become cumbersome to debug later as we’ve learned. 
+2. Always check the code you copied to make sure any fallacies are corrected as this can become cumbersome to debug later as we’ve learned.  
