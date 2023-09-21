@@ -20,13 +20,13 @@ I was frantically sifting through documentation I had already read for hours. Th
 After putting my code into an isolated environment I began to truly debug it. This is were we should talk about how to debug code
 
 #### Go to Dev Debugging 
-1. Always first step is to look for typos or anything thats missing like for example, importing a players health info in a `display_player_health` system would be pretty important. This was my first step in debugging, and spoiler it was the step I overlooked and would have led to the true problem.
+1. Always first step is to look for typos or anything thats missing like for example, a struct with a similar name or similarites in general is used instead of the correct one, or importing a players health info in a `display_player_health` system where it is not. This was my first step in debugging, and spoiler it was the step I overlooked and would have led to the true problem.
 
 2. If all your required data is being imported and there aren't any visible typos try adding `println!()`  statements. This will help analyze the data being imported. This was my second step, it didn't yield any valuable info to my problem. 
 
 3. Try searching the internet, because 9 times out of 10 someone has done what you are trying do, this can also be something simple like browsing documentation. For me this involved looking at other Bevy games that utilized the `kayak_ui` framework to try and determine how they could accomplish modular ui widgets. I also read documentation. This was my third and most demoralizing step because from what I could see in the docs, examples and other games, I was doing everything correct.
 
-4. Modify your code to something else that could work. Think of how a scientific experiment has independent variables that can change, always change one at a time. For me this involved moving the button out of the main menu and instead just display the button itself. This yielded a ui that worked but still didn't accomplish my overall goal of displaying the buttons within a confined menu space. Then I tried not rendering a button at all but rather just rendering the main menu. This led me to my real problem that I will talk about later.
+4. Modify your code to something else that could work. Think of how a scientific experiment has independent variables that can change one at a time. For me this involved moving the button out of the main menu and instead just display the button itself. This yielded a ui that worked but still didn't accomplish my overall goal of displaying the buttons within a confined menu space. Then I tried not rendering a button at all but rather just rendering the main menu. This led me to my real problem that I will talk about later.
 
 5. Ask for help. We are only human and we can easily overlook things. For me this involved going to the `kaya_ui` GitHub and sumitting an issue. I also made the mistake of using this method before the previous one. 
 
@@ -51,6 +51,6 @@ impl Default for MainMenuBundle {
 Can you spot it? The `widget_name` parameter thats required for `kayak_ui` to identify which widget is which, is a `ButtonProps` name on the `MainMenuBundle`, it should have been `MainMenuProps`. This was essentially causing `kayak_ui` to give the wrong entity to the widget render function. Ultimately this error occurred because I copied some previous code for the `impl Default` and modified it slightly yet not completely for the `MainMenuBundle`. 
 
 ### What I learned
-1. No matter what trust the process of debugging. Obviously every instance of debugging is unique and may require modifications to the original process. However in some way it branches off from the start.
+1. No matter what trust the process of debugging. Obviously every instance of debugging is unique and may require modifications to the original process. However in most cases it branches off from the start. In addition, even though I did a poor job of step one I still found the underline issue in step four.
 
 2. Always check the code you copied to make sure any fallacies are corrected as this can become cumbersome to debug later as we’ve learned. 
